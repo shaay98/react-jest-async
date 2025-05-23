@@ -2,7 +2,7 @@ import "testing-library/jest-dom";
 import {render, screen} from '@testing-library/react';
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import weather from "./api.jsx";
-
+ 
 describe("weather()", ()=>{
     beforeEach(()=>{
         global.fetch = vi.fn();
@@ -15,4 +15,4 @@ describe("weather()", ()=>{
         await expect(weather("https://api.openweathermap.org/data")).render
         weather,
     })
-})
+});
