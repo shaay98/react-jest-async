@@ -1,18 +1,28 @@
 import "testing-library/jest-dom";
 import {render, screen} from '@testing-library/react';
 import {beforeEach, describe, expect, it, vi} from "vitest";
-import weather from "./api.jsx";
+import { weather } from "./api.jsx";
  
-describe("weather()", ()=>{
-    beforeEach(()=>{
-        global.fetch = vi.fn();
-    })
-    it("renders weather in area to the page", async () => {
-        global.fetch.mockResolvedValueOnce ({
-        ok: true,
-        json: async()=> ({city:"Hammond", Temperture:80})
-        })
-        await expect(weather("https://api.openweathermap.org/data")).render
-        weather,
-    })
+import { render, screen, waitFor } from '@testing-library/react';
+
+describe('weather', () => {
+  beforeEach(() => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      text: () => Promise.resolve({ city: 'Hammond', Temperature: 80 }),
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('renders weather data on the page', async () => {
+    render(<weather url="https://api.openweathermap.org/data" />);
+
+    await waitFor(() => screen.getByText('Hammond'));
+    expect(screen.getByText('Temperature: 80°F')).toBeInTheDocument();
+  });
 });
